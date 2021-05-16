@@ -92,13 +92,22 @@ namespace BasedBot
         {
             if (msg.ReferencedMessage is SocketUserMessage repliedMsg && repliedMsg.Author is SocketUser user && user != msg.Author)
             {
-                if (msg.Content.ToLower() == "based")
+                if (!await basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg))
                 {
-                    await basedDatabase.BasedCounts.IncrementBasedCountAsync(user);
-                }
-                else if (msg.Content.ToLower() == "cringe")
-                {
-                    await basedDatabase.BasedCounts.IncrementCringeCountAsync(user);
+                    if (msg.Content.ToLower() == "based")
+                    {
+                        await Task.WhenAll(
+                            basedDatabase.BasedCounts.IncrementBasedCountAsync(user),
+                            basedDatabase.BasedReplies.AddRepliedAsync(msg.Author, repliedMsg)
+                        );
+                    }
+                    else if (msg.Content.ToLower() == "cringe")
+                    {
+                        await Task.WhenAll(
+                            basedDatabase.BasedCounts.IncrementCringeCountAsync(user),
+                            basedDatabase.BasedReplies.AddRepliedAsync(msg.Author, repliedMsg)
+                        );
+                    }
                 }
             }
         }

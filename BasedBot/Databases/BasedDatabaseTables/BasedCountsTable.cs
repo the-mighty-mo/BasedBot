@@ -13,7 +13,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
 
         public Task InitAsync()
         {
-            using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS BasedCounts (user_id TEXT NOT NULL, based INTEGER NOT NULL);", connection);
+            using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS BasedCounts (user_id TEXT PRIMARY KEY, based INTEGER NOT NULL);", connection);
             return cmd.ExecuteNonQueryAsync();
         }
 

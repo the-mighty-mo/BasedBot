@@ -11,10 +11,12 @@ namespace BasedBot.Databases
         private readonly Dictionary<System.Type, ITable> tables = new();
 
         public BasedCountsTable BasedCounts => tables[typeof(BasedCountsTable)] as BasedCountsTable;
+        public BasedRepliesTable BasedReplies => tables[typeof(BasedRepliesTable)] as BasedRepliesTable;
 
         public BasedDatabase()
         {
             tables.Add(typeof(BasedCountsTable), new BasedCountsTable(connection));
+            tables.Add(typeof(BasedRepliesTable), new BasedRepliesTable(connection));
         }
 
         public async Task InitAsync()
