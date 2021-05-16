@@ -13,7 +13,7 @@ namespace BasedBot.Modules
         [Alias("how-based")]
         public async Task HowBasedAsync()
         {
-            if (Context.User is SocketGuildUser user)
+            if (Context.User is SocketUser user)
             {
                 await HowBasedAsync(user);
             }
@@ -21,7 +21,7 @@ namespace BasedBot.Modules
 
         [Command("howbased")]
         [Alias("how-based")]
-        public async Task HowBasedAsync(SocketGuildUser user)
+        public async Task HowBasedAsync(SocketUser user)
         {
             Task<int> based = basedDatabase.BasedCounts.GetBasedCountAsync(user);
 

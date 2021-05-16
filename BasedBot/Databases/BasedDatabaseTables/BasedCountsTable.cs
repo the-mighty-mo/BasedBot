@@ -76,7 +76,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
         public async Task IncrementCringeCountAsync(SocketUser u)
         {
             string update = "UPDATE BasedCounts SET based = based - 1 WHERE user_id = @user_id;";
-            string insert = "INSERT INTO BasedCounts (user_id, count) SELECT @user_id, -1 WHERE (SELECT Changes() = 0);";
+            string insert = "INSERT INTO BasedCounts (user_id, based) SELECT @user_id, -1 WHERE (SELECT Changes() = 0);";
 
             using SqliteCommand cmd = new(update + insert, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
