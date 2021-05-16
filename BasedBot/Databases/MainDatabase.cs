@@ -1,9 +1,9 @@
-﻿using BotBase.Databases.MainDatabaseTables;
+﻿using BasedBot.Databases.MainDatabaseTables;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BotBase.Databases
+namespace BasedBot.Databases
 {
     public class MainDatabase
     {

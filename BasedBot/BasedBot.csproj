@@ -4,11 +4,11 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>warnings</Nullable>
-    <PackageId>Bot Base</PackageId>
+    <PackageId>Based Bot</PackageId>
     <Authors>Josedolf Staller</Authors>
     <Company>Josedolf Staller Enterprises</Company>
-    <Product>Bot Base</Product>
-    <Description>Base code for all Discord bots</Description>
+    <Product>Based Bot</Product>
+    <Description>Discord bot that keeps track of how based someone is</Description>
     <Copyright>Copyright © The Mighty Mi® 2021</Copyright>
   </PropertyGroup>
 

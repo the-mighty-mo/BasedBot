@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace BotBase
+namespace BasedBot
 {
     public class CommandHandler
     {

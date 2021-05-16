@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace BotBase.Databases
+namespace BasedBot.Databases
 {
     interface ITable
     {

@@ -1,7 +1,7 @@
-﻿using BotBase.Databases;
+﻿using BasedBot.Databases;
 using System.Threading.Tasks;
 
-namespace BotBase
+namespace BasedBot
 {
     public static class DatabaseManager
     {
