@@ -1,19 +1,21 @@
-﻿using BasedBot.Databases.MainDatabaseTables;
+﻿using BasedBot.Databases.BasedDatabaseTables;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BasedBot.Databases
 {
-    public class MainDatabase
+    public class BasedDatabase
     {
-        private readonly SqliteConnection connection = new("Filename=Database.db");
+        private readonly SqliteConnection connection = new("Filename=Based.db");
         private readonly Dictionary<System.Type, ITable> tables = new();
 
-        public DatabaseTable Database => tables[typeof(DatabaseTable)] as DatabaseTable;
+        public BasedCountsTable BasedCounts => tables[typeof(BasedCountsTable)] as BasedCountsTable;
 
-        public MainDatabase() =>
-            tables.Add(typeof(DatabaseTable), new DatabaseTable(connection));
+        public BasedDatabase()
+        {
+            tables.Add(typeof(BasedCountsTable), new BasedCountsTable(connection));
+        }
 
         public async Task InitAsync()
         {

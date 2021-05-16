@@ -5,16 +5,16 @@ namespace BasedBot
 {
     public static class DatabaseManager
     {
-        public static readonly MainDatabase database = new();
+        public static readonly BasedDatabase basedDatabase = new();
 
         public static async Task InitAsync() =>
             await Task.WhenAll(
-                database.InitAsync()
+                basedDatabase.InitAsync()
             );
 
         public static async Task CloseAsync() =>
             await Task.WhenAll(
-                database.CloseAsync()
+                basedDatabase.CloseAsync()
             );
     }
 }
