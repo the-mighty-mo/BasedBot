@@ -1,0 +1,53 @@
+﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static BasedBot.DatabaseManager;
+
+namespace BasedBot.Modules
+{
+    public class BasedLeaderboard : ModuleBase<SocketCommandContext>
+    {
+        [Command("basedleaderboard")]
+        [Alias("based-leaderboard")]
+        public async Task BasedLeaderboardAsync()
+        {
+            List<(SocketGuildUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
+            IEnumerable<(SocketGuildUser user, int based)> topFive = basedCounts.Take(5);
+
+            string leaderboard = "";
+            int rank = 1;
+            foreach ((SocketGuildUser user, int based) in topFive)
+            {
+                string rankString = rank switch
+                {
+                    1 => ":first_place:",
+                    2 => ":second_place:",
+                    3 => ":third_place:",
+                    _ => $"\u200b {rank} \u200b \u200b"
+                };
+                leaderboard += $"{rankString} - {user.Mention}: {based}\n";
+                rank++;
+            }
+
+            if (leaderboard == "")
+            {
+                leaderboard = "no users are based";
+            }
+
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithCurrentTimestamp();
+
+            EmbedFieldBuilder field = new EmbedFieldBuilder()
+                .WithIsInline(false)
+                .WithName("Based Leaderboard")
+                .WithValue(leaderboard);
+            embed.AddField(field);
+
+            await Context.Channel.SendMessageAsync(embed: embed.Build());
+        }
+    }
+}

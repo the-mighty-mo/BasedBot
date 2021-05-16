@@ -12,7 +12,8 @@ namespace BasedBot.Modules
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
-                .WithDescription(":ping_pong:**Pong!**");
+                .WithDescription(":ping_pong:**Pong!**")
+                .WithCurrentTimestamp();
             RestUserMessage msg = await Context.Channel.SendMessageAsync(embed: embed.Build());
 
             embed.WithDescription(":ping_pong:**Pong!**\n" +
