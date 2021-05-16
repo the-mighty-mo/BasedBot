@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using static BasedBot.DatabaseManager;
 
 namespace BasedBot
 {
@@ -82,6 +83,23 @@ namespace BasedBot
                 }
 
                 await Task.WhenAll(cmds);
+            }
+
+            await ManageBasedAsync(msg);
+        }
+
+        private async Task ManageBasedAsync(SocketUserMessage msg)
+        {
+            if (msg.ReferencedMessage is SocketUserMessage repliedMsg && repliedMsg.Author is SocketUser user && user != msg.Author)
+            {
+                if (msg.Content.ToLower() == "based")
+                {
+                    await basedDatabase.BasedCounts.IncrementBasedCountAsync(user);
+                }
+                else if (msg.Content.ToLower() == "cringe")
+                {
+                    await basedDatabase.BasedCounts.IncrementCringeCountAsync(user);
+                }
             }
         }
     }

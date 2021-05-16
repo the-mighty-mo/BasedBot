@@ -25,7 +25,7 @@ namespace BasedBot.Modules
         {
             Task<int> based = basedDatabase.BasedCounts.GetBasedCountAsync(user);
 
-            List<(SocketGuildUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
+            List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
             int rank = 1 + basedCounts.IndexOf((user, await based));
             string rankString = rank switch
             {

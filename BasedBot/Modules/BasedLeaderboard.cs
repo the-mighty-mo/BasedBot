@@ -14,12 +14,12 @@ namespace BasedBot.Modules
         [Alias("based-leaderboard")]
         public async Task BasedLeaderboardAsync()
         {
-            List<(SocketGuildUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
-            IEnumerable<(SocketGuildUser user, int based)> topFive = basedCounts.Take(5);
+            List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
+            IEnumerable<(SocketUser user, int based)> topFive = basedCounts.Take(5);
 
             string leaderboard = "";
             int rank = 1;
-            foreach ((SocketGuildUser user, int based) in topFive)
+            foreach ((SocketUser user, int based) in topFive)
             {
                 string rankString = rank switch
                 {

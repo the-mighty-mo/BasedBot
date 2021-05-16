@@ -17,7 +17,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             return cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task<int> GetBasedCountAsync(SocketGuildUser u)
+        public async Task<int> GetBasedCountAsync(SocketUser u)
         {
             int count = 0;
 
@@ -36,9 +36,9 @@ namespace BasedBot.Databases.BasedDatabaseTables
             return count;
         }
 
-        public async Task<List<(SocketGuildUser user, int count)>> GetAllBasedCountsAsync(SocketGuild g)
+        public async Task<List<(SocketUser user, int count)>> GetAllBasedCountsAsync(SocketGuild g)
         {
-            List<(SocketGuildUser user, int count)> BasedCounts = new();
+            List<(SocketUser user, int count)> BasedCounts = new();
 
             string getBasedCounts = "SELECT user_id, based FROM BasedCounts;";
 
@@ -50,7 +50,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
                 _ = ulong.TryParse(reader["user_id"].ToString(), out ulong userId);
                 _ = int.TryParse(reader["based"].ToString(), out int count);
 
-                SocketGuildUser user = g.GetUser(userId);
+                SocketUser user = g.GetUser(userId);
                 if (user != null)
                 {
                     BasedCounts.Add((user, count));
@@ -58,11 +58,11 @@ namespace BasedBot.Databases.BasedDatabaseTables
             }
             reader.Close();
 
-            BasedCounts.Sort(Comparer<(SocketGuildUser user, int count)>.Create((x, y) => y.count.CompareTo(x.count)));
+            BasedCounts.Sort(Comparer<(SocketUser user, int count)>.Create((x, y) => y.count.CompareTo(x.count)));
             return BasedCounts;
         }
 
-        public async Task IncrementBasedCountAsync(SocketGuildUser u)
+        public async Task IncrementBasedCountAsync(SocketUser u)
         {
             string update = "UPDATE BasedCounts SET based = based + 1 WHERE user_id = @user_id;";
             string insert = "INSERT INTO BasedCounts (user_id, based) SELECT @user_id, 1 WHERE (SELECT Changes() = 0);";
@@ -73,7 +73,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             await cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task IncrementCringeCountAsync(SocketGuildUser u)
+        public async Task IncrementCringeCountAsync(SocketUser u)
         {
             string update = "UPDATE BasedCounts SET based = based - 1 WHERE user_id = @user_id;";
             string insert = "INSERT INTO BasedCounts (user_id, count) SELECT @user_id, -1 WHERE (SELECT Changes() = 0);";
@@ -84,7 +84,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             await cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task ResetUserCountAsync(SocketGuildUser u)
+        public async Task ResetUserCountAsync(SocketUser u)
         {
             string delete = "DELETE FROM BasedCounts WHERE user_id = @user_id;";
 
