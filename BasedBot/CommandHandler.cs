@@ -92,7 +92,7 @@ namespace BasedBot
         {
             if (msg.ReferencedMessage is SocketUserMessage repliedMsg && repliedMsg.Author is SocketUser user && user != msg.Author)
             {
-                if (!await basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg))
+                if (repliedMsg.Content.ToLower() is not ("based" or "cringe") && !await basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg))
                 {
                     if (msg.Content.ToLower() == "based")
                     {
