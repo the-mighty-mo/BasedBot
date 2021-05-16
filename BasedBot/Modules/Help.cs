@@ -30,7 +30,8 @@ namespace BasedBot.Modules
                     "how-based [user mention/user ID (optional)]\n" +
                     "  - Gets how based a user is and their rank on the leaderboard\n\n" +
                     "based-leaderboard\n" +
-                    "  - Gets a based leaderboard of the top 5 users"
+                    "  - Gets a based leaderboard of the top 5 users\n\n" +
+                    "Reply to a message with \"based\" or \"cringe\" to change their based rating."
                 );
             embed.AddField(field);
 
