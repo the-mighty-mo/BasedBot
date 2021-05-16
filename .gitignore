@@ -1,4 +1,4 @@
-BotBase/bin/
-BotBase/obj/
+**/bin/
+**/obj/
 .vs/
-*.user
+**.user
