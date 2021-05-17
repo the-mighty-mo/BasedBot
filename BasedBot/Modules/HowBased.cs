@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static BasedBot.DatabaseManager;
@@ -9,6 +10,19 @@ namespace BasedBot.Modules
 {
     public class HowBased : ModuleBase<SocketCommandContext>
     {
+        internal static readonly string[] basedLevels =
+        {
+            "not ",
+            "not very ",
+            "somewhat ",
+            "",
+            "very ",
+            "incredibly ",
+            "unbelievably ",
+            "a god of ",
+            "a God of ",
+        };
+
         [Command("howbased")]
         [Alias("how-based")]
         public async Task HowBasedAsync()
@@ -38,12 +52,15 @@ namespace BasedBot.Modules
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
                 .WithDescription($"{user.Mention} has a based rating of {await based}.\n" +
-                    $"Rank: {rankString}");
+                    $"Rank: {rankString}\n");
 
-            if (await based != 0)
-            {
-                embed.Description += $"\nThis user is {(await based > 0 ? "based" : "cringe")}.";
-            }
+            long basedLevel = await based != 0
+                ? Math.Min(
+                    (long)Math.Log(await based),
+                    basedLevels.Length - 1
+                )
+                : 0;
+            embed.Description += $"This user is {basedLevels[basedLevel]}based.";
 
             await Context.Channel.SendMessageAsync(embed: embed.Build());
         }

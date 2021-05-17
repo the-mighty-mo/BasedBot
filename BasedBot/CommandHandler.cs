@@ -90,24 +90,22 @@ namespace BasedBot
 
         private async Task ManageBasedAsync(SocketUserMessage msg)
         {
+            // make sure this is a reply to someone else's message
             if (msg.ReferencedMessage is SocketUserMessage repliedMsg && repliedMsg.Author is SocketUser user && user != msg.Author)
             {
-                if (repliedMsg.Content.ToLower() is not ("based" or "cringe") && !await basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg))
+                // make sure the message is based and isn't a duplicate reply
+                if (repliedMsg.Content.ToLower().StartsWith("based") && !await basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg))
                 {
-                    if (msg.Content.ToLower() == "based")
+                    // farming protection
+                    if (repliedMsg.ReferencedMessage is SocketUserMessage superMsg && superMsg.Author == msg.Author && superMsg.Content.ToLower().StartsWith("based"))
                     {
-                        await Task.WhenAll(
-                            basedDatabase.BasedCounts.IncrementBasedCountAsync(user),
-                            basedDatabase.BasedReplies.AddRepliedAsync(msg.Author, repliedMsg)
-                        );
+                        return;
                     }
-                    else if (msg.Content.ToLower() == "cringe")
-                    {
-                        await Task.WhenAll(
-                            basedDatabase.BasedCounts.IncrementCringeCountAsync(user),
-                            basedDatabase.BasedReplies.AddRepliedAsync(msg.Author, repliedMsg)
-                        );
-                    }
+                    // increment the target user's based rating
+                    await Task.WhenAll(
+                        basedDatabase.BasedCounts.IncrementBasedCountAsync(user),
+                        basedDatabase.BasedReplies.AddRepliedAsync(msg.Author, repliedMsg)
+                    );
                 }
             }
         }

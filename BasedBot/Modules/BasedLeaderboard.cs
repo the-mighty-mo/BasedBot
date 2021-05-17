@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,7 +29,13 @@ namespace BasedBot.Modules
                     3 => ":third_place:",
                     _ => $"\u200b {rank} \u200b \u200b"
                 };
-                leaderboard += $"{rankString} - {user.Mention}: {based}\n";
+                long basedLevel = based != 0
+                    ? Math.Min(
+                        (long)Math.Log(based),
+                        HowBased.basedLevels.Length - 1
+                    )
+                    : 0;
+                leaderboard += $"{rankString} - {user.Mention}: {based} ({HowBased.basedLevels[basedLevel]}based)\n";
                 rank++;
             }
 

@@ -73,17 +73,6 @@ namespace BasedBot.Databases.BasedDatabaseTables
             await cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task IncrementCringeCountAsync(SocketUser u)
-        {
-            string update = "UPDATE BasedCounts SET based = based - 1 WHERE user_id = @user_id;";
-            string insert = "INSERT INTO BasedCounts (user_id, based) SELECT @user_id, -1 WHERE (SELECT Changes() = 0);";
-
-            using SqliteCommand cmd = new(update + insert, connection);
-            cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-
-            await cmd.ExecuteNonQueryAsync();
-        }
-
         public async Task ResetUserCountAsync(SocketUser u)
         {
             string delete = "DELETE FROM BasedCounts WHERE user_id = @user_id;";
