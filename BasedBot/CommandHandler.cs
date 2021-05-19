@@ -3,7 +3,9 @@ using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static BasedBot.DatabaseManager;
 
@@ -93,19 +95,34 @@ namespace BasedBot
             // make sure this is a reply to someone else's message
             if (msg.ReferencedMessage is SocketUserMessage repliedMsg && repliedMsg.Author is SocketUser user && user != msg.Author)
             {
+                Task<bool> hasReplied = basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg);
+
+                Regex regex = new(@"^\W*based(?: and((?:\s+\S+\s*)+)(?<!-)(?:-)?pilled)?\W*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var match = regex.Matches(msg.Content).Cast<Match>().FirstOrDefault();
+
                 // make sure the message is based and isn't a duplicate reply
-                if (msg.Content.ToLower().StartsWith("based") && !await basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg))
+                if (match != null && !await hasReplied)
                 {
                     // farming protection
-                    if (repliedMsg.ReferencedMessage is SocketUserMessage superMsg && superMsg.Author == msg.Author && superMsg.Content.ToLower().StartsWith("based"))
+                    if (repliedMsg.ReferencedMessage is SocketUserMessage superMsg && superMsg.Author == msg.Author && regex.IsMatch(superMsg.Content))
                     {
                         return;
                     }
-                    // increment the target user's based rating
-                    await Task.WhenAll(
+
+                    List<Task> cmds = new()
+                    {
+                        // increment the target user's based rating
                         basedDatabase.BasedCounts.IncrementBasedCountAsync(user),
                         basedDatabase.BasedReplies.AddRepliedAsync(msg.Author, repliedMsg)
-                    );
+                    };
+
+                    string pill = match.Groups.Values.Select(x => x.Value).Skip(1).FirstOrDefault()?.Trim();
+                    if (pill != null && pill.Length is > 0 and <= 35)
+                    {
+                        cmds.Add(basedDatabase.BasedPills.AddBasedPillAsync(user, pill));
+                    }
+
+                    await Task.WhenAll(cmds);
                 }
             }
         }

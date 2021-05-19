@@ -21,9 +21,9 @@ namespace BasedBot.Databases.BasedDatabaseTables
         {
             int count = 0;
 
-            string getUserCount = "SELECT based FROM BasedCounts WHERE user_id = @user_id;";
+            string getBasedCount = "SELECT based FROM BasedCounts WHERE user_id = @user_id;";
 
-            using SqliteCommand cmd = new(getUserCount, connection);
+            using SqliteCommand cmd = new(getBasedCount, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
             SqliteDataReader reader = await cmd.ExecuteReaderAsync();

@@ -21,9 +21,9 @@ namespace BasedBot.Databases.BasedDatabaseTables
         {
             bool hasReplied;
 
-            string getUserCount = "SELECT user_id FROM BasedReplies WHERE user_id = @user_id AND message_id = @message_id;";
+            string getBasedReply = "SELECT user_id FROM BasedReplies WHERE user_id = @user_id AND message_id = @message_id;";
 
-            using SqliteCommand cmd = new(getUserCount, connection);
+            using SqliteCommand cmd = new(getBasedReply, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
             cmd.Parameters.AddWithValue("@message_id", m.Id.ToString());
 

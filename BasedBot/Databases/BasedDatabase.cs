@@ -12,11 +12,13 @@ namespace BasedBot.Databases
 
         public BasedCountsTable BasedCounts => tables[typeof(BasedCountsTable)] as BasedCountsTable;
         public BasedRepliesTable BasedReplies => tables[typeof(BasedRepliesTable)] as BasedRepliesTable;
+        public BasedPillsTable BasedPills => tables[typeof(BasedPillsTable)] as BasedPillsTable;
 
         public BasedDatabase()
         {
             tables.Add(typeof(BasedCountsTable), new BasedCountsTable(connection));
             tables.Add(typeof(BasedRepliesTable), new BasedRepliesTable(connection));
+            tables.Add(typeof(BasedPillsTable), new BasedPillsTable(connection));
         }
 
         public async Task InitAsync()

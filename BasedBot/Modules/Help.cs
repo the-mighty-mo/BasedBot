@@ -27,11 +27,14 @@ namespace BasedBot.Modules
                 .WithValue(
                     "ping\n" +
                     "  - Returns the bot's Server and API latencies\n\n" +
-                    "how-based [user mention/user ID (optional)]\n" +
+                    "how-based (user mention/user ID)\n" +
                     "  - Gets how based a user is and their rank on the leaderboard\n\n" +
                     "based-leaderboard\n" +
                     "  - Gets a based leaderboard of the top 5 users\n\n" +
-                    "Reply to a user's message with \"based\" if they said something based."
+                    "what-pills (user mention/user ID)\n" +
+                    "  - Gets what pills a user has\n\n" +
+                    "Reply to a user's message with \"based\" if they said something based.\n" +
+                    "Feel free to mention if what they said is also pilled."
                 );
             embed.AddField(field);
 
