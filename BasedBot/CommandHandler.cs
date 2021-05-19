@@ -94,7 +94,7 @@ namespace BasedBot
             if (msg.ReferencedMessage is SocketUserMessage repliedMsg && repliedMsg.Author is SocketUser user && user != msg.Author)
             {
                 // make sure the message is based and isn't a duplicate reply
-                if (repliedMsg.Content.ToLower().StartsWith("based") && !await basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg))
+                if (msg.Content.ToLower().StartsWith("based") && !await basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg))
                 {
                     // farming protection
                     if (repliedMsg.ReferencedMessage is SocketUserMessage superMsg && superMsg.Author == msg.Author && superMsg.Content.ToLower().StartsWith("based"))
