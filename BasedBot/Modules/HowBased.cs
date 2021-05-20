@@ -20,7 +20,7 @@ namespace BasedBot.Modules
             "incredibly ",
             "unbelievably ",
             "a god of ",
-            "a God of ",
+            "God of ",
         };
 
         [Command("howbased")]
