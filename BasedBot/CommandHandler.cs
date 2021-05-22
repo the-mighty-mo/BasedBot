@@ -44,7 +44,7 @@ namespace BasedBot
 
         private async Task SendErrorAsync(Optional<CommandInfo> info, ICommandContext context, IResult result)
         {
-            if (!result.IsSuccess && info.Value.RunMode == RunMode.Async && result.Error != CommandError.UnknownCommand && result.Error != CommandError.UnmetPrecondition)
+            if (!result.IsSuccess && info.GetValueOrDefault()?.RunMode == RunMode.Async && result.Error != CommandError.UnknownCommand && result.Error != CommandError.UnmetPrecondition)
             {
                 await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
             }
@@ -97,7 +97,7 @@ namespace BasedBot
             {
                 Task<bool> hasReplied = basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg);
 
-                Regex regex = new(@"^\W*based(?: and((?:\s+\S+\s*)+)(?<!-)(?:-)?pilled)?\W*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                Regex regex = new(@"^\W*based(?:\s+and((?:\s+\S+\s*)+)(?<!-)(?:-)?pilled)?\W*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 var match = regex.Matches(msg.Content).Cast<Match>().FirstOrDefault();
 
                 // make sure the message is based and isn't a duplicate reply
@@ -122,6 +122,34 @@ namespace BasedBot
                         cmds.Add(basedDatabase.BasedPills.AddBasedPillAsync(user, pill));
                     }
 
+                    await Task.WhenAll(cmds);
+                }
+            }
+            else
+            {
+                Regex regex = new(@"^\W*?(?<!<)(?:<@!\d+>\s*)+\s+\W*based(?:\s+and((?:\s+\S+\s*)+)(?<!-)(?:-)?pilled)?\W*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var match = regex.Matches(msg.Content).Cast<Match>().FirstOrDefault();
+
+                // make sure the message is based
+                if (match != null)
+                {
+                    string pill = match.Groups.Values.Select(x => x.Value).Skip(1).FirstOrDefault()?.Trim();
+
+                    IEnumerable<Task> IncrementBasedForUsers()
+                    {
+                        bool validPill = pill != null && pill.Length is > 0 and <= 35;
+                        foreach (var user in msg.MentionedUsers.Distinct().Where(u => u != msg.Author))
+                        {
+                            yield return basedDatabase.BasedCounts.IncrementBasedCountAsync(user);
+
+                            if (validPill)
+                            {
+                                yield return basedDatabase.BasedPills.AddBasedPillAsync(user, pill);
+                            }
+                        }
+                    }
+
+                    IEnumerable<Task> cmds = IncrementBasedForUsers();
                     await Task.WhenAll(cmds);
                 }
             }
