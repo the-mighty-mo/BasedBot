@@ -44,7 +44,7 @@ namespace BasedBot
 
         private async Task SendErrorAsync(Optional<CommandInfo> info, ICommandContext context, IResult result)
         {
-            if (!result.IsSuccess && info.GetValueOrDefault()?.RunMode == RunMode.Async && result.Error != CommandError.UnknownCommand && result.Error != CommandError.UnmetPrecondition)
+            if (!result.IsSuccess && info.GetValueOrDefault()?.RunMode == RunMode.Async && result.Error is not (CommandError.UnknownCommand or CommandError.UnmetPrecondition))
             {
                 await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
             }
