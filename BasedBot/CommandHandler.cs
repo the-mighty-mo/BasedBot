@@ -90,7 +90,7 @@ namespace BasedBot
             await ManageBasedAsync(msg);
         }
 
-        private async Task ManageBasedAsync(SocketUserMessage msg)
+        private static async Task ManageBasedAsync(SocketUserMessage msg)
         {
             // make sure this is a reply to someone else's message
             if (msg.ReferencedMessage is SocketUserMessage repliedMsg && repliedMsg.Author is SocketUser user && user != msg.Author)
