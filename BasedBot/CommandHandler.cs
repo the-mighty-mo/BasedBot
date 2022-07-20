@@ -50,15 +50,15 @@ namespace BasedBot
             }
         }
 
-        private async Task SendConnectMessage() =>
-            await Console.Out.WriteLineAsync($"{SecurityInfo.botName} is online");
+        private Task SendConnectMessage() =>
+            Console.Out.WriteLineAsync($"{SecurityInfo.botName} is online");
 
-        private async Task SendDisconnectError(Exception e) =>
-            await Console.Out.WriteLineAsync(e.Message);
+        private Task SendDisconnectError(Exception e) =>
+            Console.Out.WriteLineAsync(e.Message);
 
-        private async Task<bool> CanBotRunCommandsAsync(SocketUserMessage msg) => await Task.Run(() => msg.Author.Id == client.CurrentUser.Id);
+        private Task<bool> CanBotRunCommandsAsync(SocketUserMessage msg) => Task.Run(() => msg.Author.Id == client.CurrentUser.Id);
 
-        private async Task<bool> ShouldDeleteBotCommands() => await Task.Run(() => true);
+        private Task<bool> ShouldDeleteBotCommands() => Task.Run(() => true);
 
         private async Task HandleCommandAsync(SocketMessage m)
         {
