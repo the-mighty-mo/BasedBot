@@ -7,13 +7,13 @@ namespace BasedBot
     {
         public static readonly BasedDatabase basedDatabase = new();
 
-        public static async Task InitAsync() =>
-            await Task.WhenAll(
+        public static Task InitAsync() =>
+            Task.WhenAll(
                 basedDatabase.InitAsync()
             );
 
-        public static async Task CloseAsync() =>
-            await Task.WhenAll(
+        public static Task CloseAsync() =>
+            Task.WhenAll(
                 basedDatabase.CloseAsync()
             );
     }
