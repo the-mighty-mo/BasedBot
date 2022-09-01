@@ -1,29 +1,29 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static BasedBot.DatabaseManager;
 
 namespace BasedBot.Modules
 {
-    public class WhatPills : ModuleBase<SocketCommandContext>
+    public class WhatPills : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("whatpills")]
-        [Alias("what-pills")]
-        public async Task WhatPillsAsync()
+        [SlashCommand("what-pills", "Gets what pills a user has")]
+        public async Task WhatPillsAsync(SocketUser user = null)
         {
-            if (Context.User is SocketUser user)
+            if (user == null)
             {
-                await WhatPillsAsync(user);
+                if (Context.User is SocketUser u)
+                {
+                    user = u;
+                }
+                else
+                {
+                    return;
+                }
             }
-        }
 
-        [Command("whatpills")]
-        [Alias("what-pills")]
-        public async Task WhatPillsAsync(SocketUser user)
-        {
             List<(string pill, int count)> basedPills = await basedDatabase.BasedPills.GetBasedPillsAsync(user);
 
             string pills = "";
@@ -37,7 +37,7 @@ namespace BasedBot.Modules
                 .WithColor(SecurityInfo.botColor)
                 .WithDescription(pills);
 
-            await Context.Channel.SendMessageAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build());
         }
     }
 }

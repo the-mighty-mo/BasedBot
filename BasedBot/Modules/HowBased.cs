@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using static BasedBot.DatabaseManager;
 
 namespace BasedBot.Modules
 {
-    public class HowBased : ModuleBase<SocketCommandContext>
+    public class HowBased : InteractionModuleBase<SocketInteractionContext>
     {
         internal static readonly string[] basedLevels =
         {
@@ -23,20 +23,21 @@ namespace BasedBot.Modules
             "God of ",
         };
 
-        [Command("howbased")]
-        [Alias("how-based")]
-        public async Task HowBasedAsync()
+        [SlashCommand("how-based", "Gets how based a user is and their rank on the leaderboard")]
+        public async Task HowBasedAsync(SocketUser user = null)
         {
-            if (Context.User is SocketUser user)
+            if (user == null)
             {
-                await HowBasedAsync(user);
+                if (Context.User is SocketUser u)
+                {
+                    user = u;
+                }
+                else
+                {
+                    return;
+                }
             }
-        }
 
-        [Command("howbased")]
-        [Alias("how-based")]
-        public async Task HowBasedAsync(SocketUser user)
-        {
             Task<int> based = basedDatabase.BasedCounts.GetBasedCountAsync(user);
 
             List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
@@ -62,7 +63,7 @@ namespace BasedBot.Modules
                 : 0;
             embed.Description += $"This user is {basedLevels[basedLevel]}based.";
 
-            await Context.Channel.SendMessageAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build());
         }
     }
 }

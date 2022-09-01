@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -9,10 +9,9 @@ using static BasedBot.DatabaseManager;
 
 namespace BasedBot.Modules
 {
-    public class BasedLeaderboard : ModuleBase<SocketCommandContext>
+    public class BasedLeaderboard : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("basedleaderboard")]
-        [Alias("based-leaderboard")]
+        [SlashCommand("based-leaderboard", "Gets a based leaderboard of the top 5 users")]
         public async Task BasedLeaderboardAsync()
         {
             List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
@@ -54,7 +53,7 @@ namespace BasedBot.Modules
                 .WithValue(leaderboard);
             embed.AddField(field);
 
-            await Context.Channel.SendMessageAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build());
         }
     }
 }
