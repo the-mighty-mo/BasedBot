@@ -40,20 +40,30 @@ namespace BasedBot.Modules
 
             Task<int> based = basedDatabase.BasedCounts.GetBasedCountAsync(user);
 
-            List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
-            int rank = 1 + basedCounts.IndexOf((user, await based));
-            string rankString = rank switch
+            EmbedBuilder embed;
+            if (Context.Guild is not null)
             {
-                1 => ":first_place:",
-                2 => ":second_place:",
-                3 => ":third_place:",
-                _ => rank.ToString()
-            };
+                List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
+                int rank = 1 + basedCounts.IndexOf((user, await based));
+                string rankString = rank switch
+                {
+                    1 => ":first_place:",
+                    2 => ":second_place:",
+                    3 => ":third_place:",
+                    _ => rank.ToString()
+                };
 
-            EmbedBuilder embed = new EmbedBuilder()
-                .WithColor(SecurityInfo.botColor)
-                .WithDescription($"{user.Mention} has a based rating of {await based}.\n" +
-                    $"Rank: {rankString}\n");
+                embed = new EmbedBuilder()
+                    .WithColor(SecurityInfo.botColor)
+                    .WithDescription($"{user.Mention} has a based rating of {await based}.\n" +
+                        $"Rank: {rankString}\n");
+            }
+            else
+            {
+                embed = new EmbedBuilder()
+                    .WithColor(SecurityInfo.botColor)
+                    .WithDescription($"{user.Mention} has a based rating of {await based}.\n");
+            }
 
             long basedLevel = await based != 0
                 ? Math.Min(

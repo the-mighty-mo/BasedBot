@@ -1,7 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
 using Discord.Interactions;
-using Discord.Rest;
 using System.Threading.Tasks;
 
 namespace BasedBot.Modules

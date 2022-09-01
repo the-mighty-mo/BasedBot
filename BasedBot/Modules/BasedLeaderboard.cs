@@ -12,6 +12,7 @@ namespace BasedBot.Modules
     public class BasedLeaderboard : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("based-leaderboard", "Gets a based leaderboard of the top 5 users")]
+        [RequireContext(ContextType.Guild)]
         public async Task BasedLeaderboardAsync()
         {
             List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
