@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BasedBot.Modules
@@ -13,13 +14,7 @@ namespace BasedBot.Modules
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle(SecurityInfo.botName);
 
-            EmbedFieldBuilder prefix = new EmbedFieldBuilder()
-                .WithIsInline(false)
-                .WithName("Prefix")
-                .WithValue("\\" +
-                    "\n**or**\n" +
-                    Context.Client.CurrentUser.Mention + "\n\u200b");
-            embed.AddField(prefix);
+            List<EmbedFieldBuilder> fields = new();
 
             EmbedFieldBuilder field = new EmbedFieldBuilder()
                 .WithIsInline(false)
@@ -36,9 +31,10 @@ namespace BasedBot.Modules
                     "Reply to a user's message with \"based\" if they said something based.\n" +
                     "Feel free to mention if what they said is also pilled."
                 );
-            embed.AddField(field);
+            fields.Add(field);
+            embed.WithFields(fields);
 
-            await Context.Interaction.RespondAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build(), ephemeral: true);
         }
     }
 }
