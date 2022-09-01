@@ -47,8 +47,8 @@ namespace BasedBot
         {
             config = new DiscordSocketConfig
             {
-                AlwaysDownloadUsers = false,
-                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers
+                AlwaysDownloadUsers = true,
+                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.GuildMessages
             };
             client = new DiscordSocketClient(config);
 
