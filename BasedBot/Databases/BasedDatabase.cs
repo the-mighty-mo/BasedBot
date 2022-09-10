@@ -10,9 +10,9 @@ namespace BasedBot.Databases
         private readonly SqliteConnection connection = new("Filename=Based.db");
         private readonly Dictionary<System.Type, ITable> tables = new();
 
-        public BasedCountsTable BasedCounts => tables[typeof(BasedCountsTable)] as BasedCountsTable;
-        public BasedRepliesTable BasedReplies => tables[typeof(BasedRepliesTable)] as BasedRepliesTable;
-        public BasedPillsTable BasedPills => tables[typeof(BasedPillsTable)] as BasedPillsTable;
+        public BasedCountsTable BasedCounts => (tables[typeof(BasedCountsTable)] as BasedCountsTable)!;
+        public BasedRepliesTable BasedReplies => (tables[typeof(BasedRepliesTable)] as BasedRepliesTable)!;
+        public BasedPillsTable BasedPills => (tables[typeof(BasedPillsTable)] as BasedPillsTable)!;
 
         public BasedDatabase()
         {

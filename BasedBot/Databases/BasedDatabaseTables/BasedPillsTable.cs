@@ -29,7 +29,11 @@ namespace BasedBot.Databases.BasedDatabaseTables
             SqliteDataReader reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                string pill = reader["pill"].ToString();
+                string? pill = reader["pill"].ToString();
+                if (pill == null)
+                {
+                    continue;
+                }
                 _ = int.TryParse(reader["count"].ToString(), out int count);
                 BasedPills.Add((pill, count));
             }

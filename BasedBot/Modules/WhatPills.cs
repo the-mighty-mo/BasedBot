@@ -10,7 +10,7 @@ namespace BasedBot.Modules
     public class WhatPills : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("what-pills", "Gets what pills a user has")]
-        public async Task WhatPillsAsync(SocketUser user = null)
+        public async Task WhatPillsAsync(SocketUser? user = null)
         {
             if (user == null)
             {

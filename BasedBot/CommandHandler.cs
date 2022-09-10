@@ -170,7 +170,7 @@ namespace BasedBot
                         basedDatabase.BasedReplies.AddRepliedAsync(msg.Author, repliedMsg)
                     };
 
-                    string pill = match.Groups.Values.Select(x => x.Value).Skip(1).FirstOrDefault()?.Trim();
+                    string? pill = match.Groups.Values.Select(x => x.Value).Skip(1).FirstOrDefault()?.Trim();
                     if (pill != null && pill.Length is > 0 and <= 35)
                     {
                         cmds.Add(basedDatabase.BasedPills.AddBasedPillAsync(user, pill));
@@ -187,7 +187,7 @@ namespace BasedBot
                 // make sure the message is based
                 if (match != null)
                 {
-                    string pill = match.Groups.Values.Select(x => x.Value).Skip(1).FirstOrDefault()?.Trim();
+                    string? pill = match.Groups.Values.Select(x => x.Value).Skip(1).FirstOrDefault()?.Trim();
 
                     IEnumerable<Task> IncrementBasedForUsers()
                     {
@@ -198,7 +198,7 @@ namespace BasedBot
 
                             if (validPill)
                             {
-                                yield return basedDatabase.BasedPills.AddBasedPillAsync(user, pill);
+                                yield return basedDatabase.BasedPills.AddBasedPillAsync(user, pill!);
                             }
                         }
                     }

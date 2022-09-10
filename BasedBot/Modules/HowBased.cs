@@ -24,7 +24,7 @@ namespace BasedBot.Modules
         };
 
         [SlashCommand("how-based", "Gets how based a user is and their rank on the leaderboard")]
-        public async Task HowBasedAsync(SocketUser user = null)
+        public async Task HowBasedAsync(SocketUser? user = null)
         {
             if (user == null)
             {
@@ -41,7 +41,7 @@ namespace BasedBot.Modules
             Task<int> based = basedDatabase.BasedCounts.GetBasedCountAsync(user);
 
             EmbedBuilder embed;
-            if (Context.Guild is not null)
+            if (Context.Guild != null)
             {
                 List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
                 int rank = 1 + basedCounts.IndexOf((user, await based));

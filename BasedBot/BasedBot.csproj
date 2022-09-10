@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>warnings</Nullable>
+    <Nullable>enable</Nullable>
     <PackageId>Based Bot</PackageId>
     <Authors>Josedolf Staller</Authors>
     <Company>Josedolf Staller Enterprises</Company>
