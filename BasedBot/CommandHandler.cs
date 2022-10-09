@@ -90,9 +90,9 @@ namespace BasedBot
         private Task SendDisconnectError(Exception e) =>
             Console.Out.WriteLineAsync(e.Message);
 
-        private Task<bool> CanBotRunCommandsAsync(SocketUser usr) => Task.Run(() => usr.Id == client.CurrentUser.Id);
+        private Task<bool> CanBotRunCommandsAsync(SocketUser usr) => Task.FromResult(usr.Id == client.CurrentUser.Id);
 
-        private static Task<bool> ShouldDeleteBotCommands() => Task.Run(() => true);
+        private static Task<bool> ShouldDeleteBotCommands() => Task.FromResult(true);
 
         private async Task HandleSlashCommandAsync(SocketSlashCommand m)
         {
