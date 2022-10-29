@@ -27,15 +27,15 @@ namespace BasedBot.Databases.BasedDatabaseTables
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
             cmd.Parameters.AddWithValue("@message_id", m.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            hasReplied = await reader.ReadAsync();
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            hasReplied = await reader.ReadAsync().ConfigureAwait(false);
 
             reader.Close();
 
             return hasReplied;
         }
 
-        public async Task AddRepliedAsync(SocketUser u, SocketUserMessage m)
+        public Task AddRepliedAsync(SocketUser u, SocketUserMessage m)
         {
             string insert = "INSERT INTO BasedReplies (user_id, message_id) SELECT @user_id, @message_id\n" +
                 "WHERE NOT EXISTS (SELECT 1 FROM BasedReplies WHERE user_id = @user_id AND message_id = @message_id);";
@@ -44,7 +44,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
             cmd.Parameters.AddWithValue("@message_id", m.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            return cmd.ExecuteNonQueryAsync();
         }
     }
 }

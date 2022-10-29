@@ -26,8 +26,8 @@ namespace BasedBot.Databases.BasedDatabaseTables
             using SqliteCommand cmd = new(getBasedCount, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            if (await reader.ReadAsync().ConfigureAwait(false))
             {
                 _ = int.TryParse(reader["based"].ToString(), out count);
             }
@@ -44,8 +44,8 @@ namespace BasedBot.Databases.BasedDatabaseTables
 
             using SqliteCommand cmd = new(getBasedCounts, connection);
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 _ = ulong.TryParse(reader["user_id"].ToString(), out ulong userId);
                 _ = int.TryParse(reader["based"].ToString(), out int count);
@@ -62,7 +62,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             return BasedCounts;
         }
 
-        public async Task IncrementBasedCountAsync(SocketUser u)
+        public Task IncrementBasedCountAsync(SocketUser u)
         {
             string update = "UPDATE BasedCounts SET based = based + 1 WHERE user_id = @user_id;";
             string insert = "INSERT INTO BasedCounts (user_id, based) SELECT @user_id, 1 WHERE (SELECT Changes() = 0);";
@@ -70,17 +70,17 @@ namespace BasedBot.Databases.BasedDatabaseTables
             using SqliteCommand cmd = new(update + insert, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            return cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task ResetUserCountAsync(SocketUser u)
+        public Task ResetUserCountAsync(SocketUser u)
         {
             string delete = "DELETE FROM BasedCounts WHERE user_id = @user_id;";
 
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            return cmd.ExecuteNonQueryAsync();
         }
     }
 }

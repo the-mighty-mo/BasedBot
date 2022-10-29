@@ -38,13 +38,15 @@ namespace BasedBot.Modules
                 }
             }
 
-            Task<int> based = basedDatabase.BasedCounts.GetBasedCountAsync(user);
+            Task<int> basedTask = basedDatabase.BasedCounts.GetBasedCountAsync(user);
+            int based;
 
             EmbedBuilder embed;
             if (Context.Guild != null)
             {
-                List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
-                int rank = 1 + basedCounts.IndexOf((user, await based));
+                List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild).ConfigureAwait(false);
+                based = await basedTask.ConfigureAwait(false);
+                int rank = 1 + basedCounts.IndexOf((user, based));
                 string rankString = rank switch
                 {
                     1 => ":first_place:",
@@ -55,25 +57,26 @@ namespace BasedBot.Modules
 
                 embed = new EmbedBuilder()
                     .WithColor(SecurityInfo.botColor)
-                    .WithDescription($"{user.Mention} has a based rating of {await based}.\n" +
+                    .WithDescription($"{user.Mention} has a based rating of {based}.\n" +
                         $"Rank: {rankString}\n");
             }
             else
             {
+                based = await basedTask.ConfigureAwait(false);
                 embed = new EmbedBuilder()
                     .WithColor(SecurityInfo.botColor)
-                    .WithDescription($"{user.Mention} has a based rating of {await based}.\n");
+                    .WithDescription($"{user.Mention} has a based rating of {based}.\n");
             }
 
-            long basedLevel = await based != 0
+            long basedLevel = based != 0
                 ? Math.Min(
-                    (long)Math.Log(await based),
+                    (long)Math.Log(based),
                     basedLevels.Length - 1
                 )
                 : 0;
             embed.Description += $"This user is {basedLevels[basedLevel]}based.";
 
-            await Context.Interaction.RespondAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
         }
     }
 }

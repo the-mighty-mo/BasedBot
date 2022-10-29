@@ -15,7 +15,7 @@ namespace BasedBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task BasedLeaderboardAsync()
         {
-            List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild);
+            List<(SocketUser user, int based)> basedCounts = await basedDatabase.BasedCounts.GetAllBasedCountsAsync(Context.Guild).ConfigureAwait(false);
             IEnumerable<(SocketUser user, int based)> topFive = basedCounts.Take(5);
 
             string leaderboard = "";
@@ -54,7 +54,7 @@ namespace BasedBot.Modules
                 .WithValue(leaderboard);
             embed.AddField(field);
 
-            await Context.Interaction.RespondAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
         }
     }
 }

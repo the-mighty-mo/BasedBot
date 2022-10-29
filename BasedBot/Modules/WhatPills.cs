@@ -24,7 +24,7 @@ namespace BasedBot.Modules
                 }
             }
 
-            List<(string pill, int count)> basedPills = await basedDatabase.BasedPills.GetBasedPillsAsync(user);
+            List<(string pill, int count)> basedPills = await basedDatabase.BasedPills.GetBasedPillsAsync(user).ConfigureAwait(false);
 
             string pills = "";
             foreach ((string pill, int count) in basedPills)
@@ -37,7 +37,7 @@ namespace BasedBot.Modules
                 .WithColor(SecurityInfo.botColor)
                 .WithDescription(pills);
 
-            await Context.Interaction.RespondAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
         }
     }
 }

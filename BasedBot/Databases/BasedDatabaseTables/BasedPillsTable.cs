@@ -26,8 +26,8 @@ namespace BasedBot.Databases.BasedDatabaseTables
             using SqliteCommand cmd = new(getUserCount, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 string? pill = reader["pill"].ToString();
                 if (pill == null)
@@ -43,7 +43,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             return BasedPills;
         }
 
-        public async Task AddBasedPillAsync(SocketUser u, string pill)
+        public Task AddBasedPillAsync(SocketUser u, string pill)
         {
             string update = "UPDATE BasedPills SET count = count + 1 WHERE user_id = @user_id AND pill = @pill;";
             string insert = "INSERT INTO BasedPills (user_id, pill, count) SELECT @user_id, @pill, 1 WHERE (SELECT Changes() = 0);";
@@ -52,7 +52,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
             cmd.Parameters.AddWithValue("@pill", pill);
 
-            await cmd.ExecuteNonQueryAsync();
+            return cmd.ExecuteNonQueryAsync();
         }
     }
 }
