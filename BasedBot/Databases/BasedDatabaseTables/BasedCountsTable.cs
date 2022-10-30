@@ -11,10 +11,10 @@ namespace BasedBot.Databases.BasedDatabaseTables
 
         public BasedCountsTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS BasedCounts (user_id TEXT PRIMARY KEY, based INTEGER NOT NULL);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<int> GetBasedCountAsync(SocketUser u)
@@ -62,7 +62,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             return BasedCounts;
         }
 
-        public Task IncrementBasedCountAsync(SocketUser u)
+        public async Task IncrementBasedCountAsync(SocketUser u)
         {
             string update = "UPDATE BasedCounts SET based = based + 1 WHERE user_id = @user_id;";
             string insert = "INSERT INTO BasedCounts (user_id, based) SELECT @user_id, 1 WHERE (SELECT Changes() = 0);";
@@ -70,17 +70,17 @@ namespace BasedBot.Databases.BasedDatabaseTables
             using SqliteCommand cmd = new(update + insert, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
-        public Task ResetUserCountAsync(SocketUser u)
+        public async Task ResetUserCountAsync(SocketUser u)
         {
             string delete = "DELETE FROM BasedCounts WHERE user_id = @user_id;";
 
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

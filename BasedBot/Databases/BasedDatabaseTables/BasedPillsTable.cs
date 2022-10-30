@@ -11,10 +11,10 @@ namespace BasedBot.Databases.BasedDatabaseTables
 
         public BasedPillsTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS BasedPills (user_id TEXT NOT NULL, pill TEXT NOT NULL, count INTEGER NOT NULL, UNIQUE(user_id, pill));", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<List<(string pill, int count)>> GetBasedPillsAsync(SocketUser u)
@@ -43,7 +43,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             return BasedPills;
         }
 
-        public Task AddBasedPillAsync(SocketUser u, string pill)
+        public async Task AddBasedPillAsync(SocketUser u, string pill)
         {
             string update = "UPDATE BasedPills SET count = count + 1 WHERE user_id = @user_id AND pill = @pill;";
             string insert = "INSERT INTO BasedPills (user_id, pill, count) SELECT @user_id, @pill, 1 WHERE (SELECT Changes() = 0);";
@@ -52,7 +52,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
             cmd.Parameters.AddWithValue("@pill", pill);
 
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

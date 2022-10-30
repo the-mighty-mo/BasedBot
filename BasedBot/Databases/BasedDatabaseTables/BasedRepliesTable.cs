@@ -11,10 +11,10 @@ namespace BasedBot.Databases.BasedDatabaseTables
 
         public BasedRepliesTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS BasedReplies (user_id TEXT NOT NULL, message_id TEXT NOT NULL, UNIQUE(user_id, message_id));", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> HasRepliedAsync(SocketUser u, SocketUserMessage m)
@@ -35,7 +35,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             return hasReplied;
         }
 
-        public Task AddRepliedAsync(SocketUser u, SocketUserMessage m)
+        public async Task AddRepliedAsync(SocketUser u, SocketUserMessage m)
         {
             string insert = "INSERT INTO BasedReplies (user_id, message_id) SELECT @user_id, @message_id\n" +
                 "WHERE NOT EXISTS (SELECT 1 FROM BasedReplies WHERE user_id = @user_id AND message_id = @message_id);";
@@ -44,7 +44,7 @@ namespace BasedBot.Databases.BasedDatabaseTables
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
             cmd.Parameters.AddWithValue("@message_id", m.Id.ToString());
 
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }
