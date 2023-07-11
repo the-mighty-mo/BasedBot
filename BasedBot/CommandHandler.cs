@@ -12,7 +12,7 @@ using static BasedBot.DatabaseManager;
 
 namespace BasedBot
 {
-    public class CommandHandler
+    public partial class CommandHandler
     {
         public const string prefix = "\\";
         private static int argPos = 0;
@@ -142,9 +142,6 @@ namespace BasedBot
             await ManageBasedAsync(msg).ConfigureAwait(false);
         }
 
-        private static readonly Regex BasedReply = new(@"^\W*based(?:\s+and((?:\s+\S+\s*)+)(?<!-)(?:-)?pilled)?\W*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex BasedMention = new(@"^\W*?(?<!<)(?:<@!\d+>\s*)+\s+\W*based(?:\s+and((?:\s+\S+\s*)+)(?<!-)(?:-)?pilled)?\W*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         private static async Task ManageBasedAsync(SocketUserMessage msg)
         {
             // make sure this is a reply to someone else's message
@@ -152,13 +149,14 @@ namespace BasedBot
             {
                 Task<bool> hasReplied = basedDatabase.BasedReplies.HasRepliedAsync(msg.Author, repliedMsg);
 
-                var match = BasedReply.Matches(msg.Content).Cast<Match>().FirstOrDefault();
+                var regex = BasedReply();
+                var match = regex.Matches(msg.Content).Cast<Match>().FirstOrDefault();
 
                 // make sure the message is based and isn't a duplicate reply
                 if (match != null && !await hasReplied.ConfigureAwait(false))
                 {
                     // farming protection
-                    if (repliedMsg.ReferencedMessage is SocketUserMessage superMsg && superMsg.Author == msg.Author && BasedReply.IsMatch(superMsg.Content))
+                    if (repliedMsg.ReferencedMessage is SocketUserMessage superMsg && superMsg.Author == msg.Author && regex.IsMatch(superMsg.Content))
                     {
                         return;
                     }
@@ -181,7 +179,8 @@ namespace BasedBot
             }
             else
             {
-                var match = BasedMention.Matches(msg.Content).Cast<Match>().FirstOrDefault();
+                var regex = BasedMention();
+                var match = regex.Matches(msg.Content).Cast<Match>().FirstOrDefault();
 
                 // make sure the message is based
                 if (match != null)
@@ -207,5 +206,11 @@ namespace BasedBot
                 }
             }
         }
+
+        [GeneratedRegex(@"^\W*based(?:\s+and((?:\s+\S+\s*)+)(?<!-)(?:-)?pilled)?\W*$", RegexOptions.IgnoreCase)]
+        private static partial Regex BasedReply();
+
+        [GeneratedRegex(@"^\W*?(?<!<)(?:<@!\d+>\s*)+\s+\W*based(?:\s+and((?:\s+\S+\s*)+)(?<!-)(?:-)?pilled)?\W*$", RegexOptions.IgnoreCase)]
+        private static partial Regex BasedMention();
     }
 }
